@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Inscripción Completo - Certus</title>
-    <!-- Tailwind CSS para el diseño con la paleta de Certus -->
+    <title>Simulador de Inscripción Avanzado - Certus</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js para los gráficos de balances -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Librería oficial de Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
@@ -48,8 +45,8 @@
         <section id="vista-simulador" class="block">
             <div class="bg-white rounded-lg shadow-xl p-6 md:p-8 border-t-4 border-certusCeleste">
                 <div class="text-center mb-8">
-                    <h1 class="text-2xl md:text-3xl font-bold text-certusAzul">Simulador de Matrícula Completo</h1>
-                    <p class="text-gray-500 mt-2 text-sm md:text-base">Módulo de registro académico y pasarela de validación de pagos en la nube.</p>
+                    <h1 class="text-2xl md:text-3xl font-bold text-certusAzul">Portal Matrícula y Selección de Cursos</h1>
+                    <p class="text-gray-500 mt-2 text-sm md:text-base">Elige tu carrera, arma tu propio horario (máx. 6 cursos) y registra tu pago.</p>
                 </div>
 
                 <form id="enrollmentForm" onsubmit="saveData(event)" class="space-y-6">
@@ -63,7 +60,7 @@
                                 <input type="text" id="nombre" required class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-certusCeleste outline-none">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold mb-1">Documento Nacional de Identidad (DNI)</label>
+                                <label class="block text-sm font-semibold mb-1">DNI (Documento de Identidad)</label>
                                 <input type="text" id="dni" maxlength="8" pattern="[0-9]{8}" placeholder="8 dígitos" required class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-certusCeleste outline-none">
                             </div>
                             <div>
@@ -81,24 +78,18 @@
                         </div>
                     </div>
 
-                    <!-- SECCIÓN 2: ESTRUCTURA ACADÉMICA -->
+                    <!-- SECCIÓN 2: ESTRUCTURA ACADÉMICA Y SELECCIÓN DE CURSOS -->
                     <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <h3 class="text-sm font-bold text-certusAzul uppercase mb-4 tracking-wider">2. Selección Académica</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <h3 class="text-sm font-bold text-certusAzul uppercase mb-4 tracking-wider">2. Selección Académica y Horarios</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>
                                 <label class="block text-sm font-semibold mb-1">Carrera Profesional</label>
-                                <select id="carrera" onchange="cargarCursos()" required class="w-full px-3 py-2 border rounded-md bg-white focus:ring-2 focus:ring-certusCeleste outline-none">
+                                <select id="carrera" onchange="generarMallaCursos()" required class="w-full px-3 py-2 border rounded-md bg-white focus:ring-2 focus:ring-certusCeleste outline-none">
                                     <option value="">Selecciona una carrera</option>
                                     <option value="Desarrollo de Sistemas">Desarrollo de Sistemas de Información</option>
                                     <option value="Administración de Empresas">Administración de Empresas</option>
                                     <option value="Diseño Gráfico">Diseño Gráfico</option>
                                     <option value="Contabilidad">Contabilidad y Finanzas</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold mb-1">Curso Especializado del Ciclo</label>
-                                <select id="curso" required class="w-full px-3 py-2 border rounded-md bg-white focus:ring-2 focus:ring-certusCeleste outline-none">
-                                    <option value="">Primero selecciona una carrera</option>
                                 </select>
                             </div>
                             <div>
@@ -111,18 +102,18 @@
                                     <option value="IV Ciclo">IV Ciclo</option>
                                 </select>
                             </div>
-                            <div>
-                                <label class="block text-sm font-semibold mb-1">Horario / Turno de Preferencia</label>
-                                <select id="turno" required class="w-full px-3 py-2 border rounded-md bg-white focus:ring-2 focus:ring-certusCeleste outline-none">
-                                    <option value="Mañana">Mañana (08:00 AM - 12:00 PM)</option>
-                                    <option value="Tarde">Tarde (02:00 PM - 06:00 PM)</option>
-                                    <option value="Noche">Noche (06:30 PM - 10:30 PM)</option>
-                                </select>
+                        </div>
+
+                        <!-- CONTENEDOR DINÁMICO DE CURSOS (MALLA DE 8) -->
+                        <div class="border-t pt-4">
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Selecciona tus cursos y asigna sus horarios (Mínimo 1, Máximo 6):</label>
+                            <div id="contenedor-malla" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <p class="text-gray-400 text-sm italic col-span-2">Por favor, elige primero una carrera profesional para visualizar los 8 cursos disponibles.</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- SECCIÓN 3: INFORMACIÓN DE PAGO (PERÚ) -->
+                    <!-- SECCIÓN 3: INFORMACIÓN DE PAGO -->
                     <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                         <h3 class="text-sm font-bold text-certusAzul uppercase mb-4 tracking-wider">3. Detalle Financiero del Pago</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -147,6 +138,13 @@
                         </div>
                     </div>
 
+                    <!-- SECCIÓN 4: CAJA DE COMENTARIOS PARA MEJORAS -->
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                        <h3 class="text-sm font-bold text-blue-900 uppercase mb-2 tracking-wider">4. Buzón de Retroalimentación</h3>
+                        <label class="block text-xs text-blue-800 mb-2">Ayúdanos a optimizar la plataforma. Déjanos tus comentarios o sugerencias de mejora:</label>
+                        <textarea id="comentarios" rows="3" required placeholder="Escribe aquí tu opinión sobre la velocidad del proceso, diseño o qué funcionalidades te gustaría agregar..." class="w-full p-3 border rounded-md bg-white outline-none focus:ring-2 focus:ring-blue-400 text-sm"></textarea>
+                    </div>
+
                     <!-- Botón Enviar -->
                     <div class="pt-2">
                         <button type="submit" id="btnEnviar" class="w-full bg-certusAzul hover:bg-blue-900 text-white font-bold py-3 rounded-md transition duration-300 shadow-md">
@@ -154,14 +152,6 @@
                         </button>
                     </div>
                 </form>
-
-                <!-- BOTÓN COMPARTIR -->
-                <div class="mt-8 pt-6 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <p class="text-xs text-gray-500">¿Quieres enviar este simulador mejorado a tus compañeros?</p>
-                    <button onclick="shareLink()" class="inline-flex items-center space-x-2 text-sm font-semibold text-certusCeleste hover:text-cyan-700 transition">
-                        🔗 Copiar enlace para compartir
-                    </button>
-                </div>
             </div>
         </section>
 
@@ -169,7 +159,6 @@
         <section id="vista-panel" class="hidden space-y-6">
             <div class="bg-white rounded-lg shadow-md p-6">
                 
-                <!-- Encabezado con Botón de Actualizar Directo -->
                 <div class="flex flex-col sm:flex-row justify-between items-center border-b pb-4 mb-4 gap-4">
                     <h2 class="text-xl font-bold text-certusAzul flex items-center gap-2">📊 Panel Gerencial en Tiempo Real</h2>
                     <button onclick="updateDashboard()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded shadow text-xs transition duration-200 uppercase tracking-wider">
@@ -177,7 +166,7 @@
                     </button>
                 </div>
                 
-                <!-- Métricas Clave -->
+                <!-- Métricas -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                     <div class="bg-blue-50 border-l-4 border-certusAzul p-4 rounded shadow-sm">
                         <p class="text-xs font-bold text-gray-500 uppercase tracking-wide">Total Matriculados</p>
@@ -193,15 +182,14 @@
                     </div>
                 </div>
 
-                <!-- Zona de Gráficos -->
                 <div class="mb-8">
-                    <h3 class="text-xs font-bold text-gray-600 mb-4 uppercase tracking-wider text-center">Distribución Real de Alumnos matriculados por Carrera</h3>
+                    <h3 class="text-xs font-bold text-gray-600 mb-4 uppercase tracking-wider text-center">Distribución Real de Alumnos por Carrera</h3>
                     <div class="w-full max-w-sm mx-auto h-56">
                         <canvas id="carreraChart"></canvas>
                     </div>
                 </div>
 
-                <!-- Tabla de Historial Completo -->
+                <!-- Tabla de Historial -->
                 <div>
                     <h3 class="text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">Registro Analítico de Transacciones</h3>
                     <div class="overflow-x-auto border rounded-lg">
@@ -210,15 +198,14 @@
                                 <tr>
                                     <th class="px-3 py-3 text-left">DNI / Código</th>
                                     <th class="px-3 py-3 text-left">Alumno</th>
-                                    <th class="px-3 py-3 text-left">Contacto</th>
-                                    <th class="px-3 py-3 text-left">Especialidad / Curso</th>
-                                    <th class="px-3 py-3 text-left">Turno</th>
+                                    <th class="px-3 py-3 text-left">Cursos Seleccionados y Horarios alternos</th>
                                     <th class="px-3 py-3 text-left">Método Pago</th>
                                     <th class="px-3 py-3 text-right">Monto</th>
+                                    <th class="px-3 py-3 text-left">Feedback Alumno</th>
                                 </tr>
                             </thead>
                             <tbody id="tablaCuerpo" class="divide-y divide-gray-200 bg-white">
-                                <!-- Filas asíncronas -->
+                                <!-- Filas -->
                             </tbody>
                         </table>
                     </div>
@@ -228,40 +215,85 @@
 
     </main>
 
-    <!-- LOGIC SCRIPT -->
     <script>
-        // CONFIGURACIÓN DE CONEXIÓN CON TU PROYECTO SUPABASE
         const SUPABASE_URL = "https://ydukqhlzgjcpqbwltqwm.supabase.co"; 
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlkdWtxaGx6Z2pjcHFid2x0cXdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1ODUwMjIsImV4cCI6MjA5ODE2MTAyMn0.w3euDM0HB4wgzlLCUAnTrKfgw7uwpeUzMzRn87M1tdg"; 
         
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         let myChart = null;
-        const PASSWORD_ADMIN = "certus2026."; // Contraseña con punto al final
+        const PASSWORD_ADMIN = "certus2026.";
 
-        // Cursos automáticos según la carrera seleccionada
-        const mapaCursos = {
-            "Desarrollo de Sistemas": ["Algoritmia Superior", "Estructura de Datos en la Nube", "Modelado de Software", "Desarrollo de API REST"],
-            "Administración de Empresas": ["Gestión Logística Integral", "Fundamentos de Marketing", "Comportamiento Organizacional", "Administración Estratégica"],
-            "Diseño Gráfico": ["Ilustración Vectorial Avanzada", "Diseño de Identidad de Marca", "Fundamentos Tipográficos", "Animación 2D Digital"],
-            "Contabilidad": ["Contabilidad Financiera I", "Cálculo de Tributos Locales", "Auditoría Interna", "Análisis de Costos Operativos"]
+        // Mallas de 8 cursos por carrera
+        const mallasPorCarrera = {
+            "Desarrollo de Sistemas": [
+                "Algoritmia y Fundamentos de Programación", "Base de Datos Estructuradas", "Modelado de Requerimientos de Software", 
+                "Estructuras de Datos Avanzadas", "Desarrollo de Aplicaciones Móviles", "Arquitectura de APIs y Microservicios", 
+                "Gestión y Despliegue Cloud DevOps", "Inteligencia Artificial Aplicada"
+            ],
+            "Administración de Empresas": [
+                "Administración y Gestión de Negocios", "Contabilidad para la Toma de Decisiones", "Comportamiento y Clima Organizacional", 
+                "Marketing Digital y Ventas Efectivas", "Gestión Logística y Cadena de Suministro", "Dirección Estratégica Corporativa", 
+                "Finanzas Empresariales Aplicadas", "Formulación de Planes de Negocio"
+            ],
+            "Diseño Gráfico": [
+                "Fundamentos Visuales y Composición", "Ilustración Digital Vectorial", "Tipografía y Diseño Editorial", 
+                "Retoque Fotográfico Avanzado", "Identidad Corporativa y Branding", "Diseño de Experiencia de Usuario UX/UI", 
+                "Animación y Efectos Motion Graphics", "Portafolio Creativo Profesional"
+            ],
+            "Contabilidad": [
+                "Principios de Contabilidad General", "Documentación y Registros Comerciales", "Cálculo y Liquidación de Tributos", 
+                "Contabilidad de Costos Industriales", "Auditoría Financiera Interna", "Análisis e Interpretación de Estados Financieros", 
+                "Sistemas Informáticos Contables", "Planeamiento Tributario Estratégico"
+            ]
         };
 
-        function cargarCursos() {
+        // Generar dinámicamente los 8 cursos con sus respectivos selectores de horarios
+        function generarMallaCursos() {
             const carreraSel = document.getElementById('carrera').value;
-            const comboCurso = document.getElementById('curso');
-            comboCurso.innerHTML = "";
+            const contenedor = document.getElementById('contenedor-malla');
+            contenedor.innerHTML = "";
 
-            if (!carreraSel || !mapaCursos[carreraSel]) {
-                comboCurso.innerHTML = '<option value="">Primero selecciona una carrera</option>';
+            if (!carreraSel || !mallasPorCarrera[carreraSel]) {
+                contenedor.innerHTML = '<p class="text-gray-400 text-sm italic col-span-2">Por favor, elige primero una carrera profesional para visualizar los 8 cursos disponibles.</p>';
                 return;
             }
 
-            mapaCursos[carreraSel].forEach(curso => {
-                let opt = document.createElement('option');
-                opt.value = curso;
-                opt.innerText = curso;
-                comboCurso.appendChild(opt);
+            mallasPorCarrera[carreraSel].forEach((curso, index) => {
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between p-3 bg-white border rounded-md shadow-sm space-x-2";
+                div.innerHTML = `
+                    <div class="flex items-start space-x-2 flex-1">
+                        <input type="checkbox" name="curso_chk" value="${curso}" id="chk_${index}" onchange="validarLimiteCursos(this)" class="mt-1 h-4 w-4 rounded text-certusCeleste focus:ring-certusCeleste">
+                        <label for="chk_${index}" class="text-xs font-medium text-gray-700 leading-tight">${curso}</label>
+                    </div>
+                    <select id="turno_${index}" disabled class="text-xs border rounded p-1 bg-gray-50 focus:ring-1 focus:ring-certusCeleste outline-none">
+                        <option value="Mañana">Mañana</option>
+                        <option value="Tarde">Tarde</option>
+                        <option value="Noche">Noche</option>
+                    </select>
+                `;
+                contenedor.appendChild(div);
             });
+        }
+
+        // Controlar que solo se marquen un máximo de 6 casillas
+        function validarLimiteCursos(checkbox) {
+            const seleccionados = document.querySelectorAll('input[name="curso_chk"]:checked');
+            const index = checkbox.id.split('_')[1];
+            const selectTurno = document.getElementById(`turno_${index}`);
+
+            if (checkbox.checked) {
+                if (seleccionados.length > 6) {
+                    alert("⛔ Restricción del Sistema: Solo puedes matricularte en un máximo de 6 cursos por ciclo.");
+                    checkbox.checked = false;
+                    return;
+                }
+                selectTurno.disabled = false;
+                selectTurno.classList.remove('bg-gray-50');
+            } else {
+                selectTurno.disabled = true;
+                selectTurno.classList.add('bg-gray-50');
+            }
         }
 
         function switchView(view) {
@@ -271,9 +303,8 @@
             }
         }
 
-        // Validación de ingreso al Panel Administrativo
         function openAdminPanel() {
-            const intento = prompt("Introduce la contraseña de Administrador para ver los balances:");
+            const intento = prompt("Introduce la contraseña de Administrador:");
             if (intento === PASSWORD_ADMIN) {
                 document.getElementById('vista-simulador').classList.replace('block', 'hidden');
                 document.getElementById('vista-panel').classList.replace('hidden', 'block');
@@ -283,12 +314,27 @@
             }
         }
 
-        // GUARDAR DATOS EN LA NUBE (INSERT EN SUPABASE) Y MOSTRAR RESUMEN EXTRAORDINARIO
+        // GUARDAR DATOS EN LA NUBE CON RESUMEN COMPLETO Y COMENTARIOS
         async function saveData(e) {
             e.preventDefault();
+            
+            const checkboxes = document.querySelectorAll('input[name="curso_chk"]:checked');
+            if (checkboxes.length === 0) {
+                alert("⚠️ Debes seleccionar al menos un curso para procesar tu matrícula.");
+                return;
+            }
+
             const btn = document.getElementById('btnEnviar');
-            btn.innerText = "Guardando en Base de Datos...";
+            btn.innerText = "Procesando Matrícula...";
             btn.disabled = true;
+
+            // Construir la estructura de cursos elegidos con sus horarios específicos
+            let listaCursosHorarios = [];
+            checkboxes.forEach(chk => {
+                const index = chk.id.split('_')[1];
+                const turnoElegido = document.getElementById(`turno_${index}`).value;
+                listaCursosHorarios.push({ curso: chk.value, horario: turnoElegido });
+            });
             
             const nuevoRegistro = {
                 nombre: document.getElementById('nombre').value,
@@ -297,11 +343,11 @@
                 correo: document.getElementById('correo').value,
                 telefono: document.getElementById('telefono').value,
                 carrera: document.getElementById('carrera').value,
-                curso: document.getElementById('curso').value,
                 ciclo: document.getElementById('ciclo').value,
-                turno: document.getElementById('turno').value,
+                cursos_horarios: JSON.stringify(listaCursosHorarios), // Se guarda estructurado
                 metodo_pago: document.getElementById('metodo_pago').value,
-                monto: parseFloat(document.getElementById('monto').value)
+                monto: parseFloat(document.getElementById('monto').value),
+                comentarios: document.getElementById('comentarios').value
             };
 
             const { data, error } = await _supabase
@@ -309,47 +355,43 @@
                 .insert([nuevoRegistro]);
 
             if (error) {
-                alert('Hubo un error al guardar. Asegúrate de haber agregado la columna "dni" en Supabase: ' + error.message);
+                alert('Error al guardar. Asegúrate de haber modificado las columnas en tu panel de Supabase: ' + error.message);
             } else {
-                // MENSAJE DE RESUMEN DETALLADO AL COMPLETAR CON ÉXITO
+                // Formatear texto de cursos elegidos para el mensaje emergente final
+                let cursosTextoAlerta = listaCursosHorarios.map(item => `   • ${item.curso} [Turno: ${item.horario}]`).join('\n');
+
                 alert(
-                    `🎉 ¡REGISTRO EXITOSO EN LA BASE DE DATOS! 🎉\n\n` +
-                    `----------------------------------------\n` +
-                    `📝 RESUMEN DE LA MATRÍCULA:\n` +
-                    `----------------------------------------\n` +
-                    `👤 Alumno: ${nuevoRegistro.nombre}\n` +
-                    `🆔 DNI: ${nuevoRegistro.dni}\n` +
-                    `🔑 Código: ${nuevoRegistro.codigo}\n` +
-                    `🎓 Carrera: ${nuevoRegistro.carrera}\n` +
-                    `📚 Curso: ${nuevoRegistro.curso}\n` +
-                    `🔄 Ciclo: ${nuevoRegistro.ciclo}\n` +
-                    `⏰ Horario: ${nuevoRegistro.turno}\n\n` +
-                    `----------------------------------------\n` +
-                    `💰 DETALLES DE PAGO VERIFICADO:\n` +
-                    `----------------------------------------\n` +
-                    `💳 Método: ${nuevoRegistro.metodo_pago}\n` +
-                    `💵 Monto: S/ ${nuevoRegistro.monto.toFixed(2)}\n\n` +
-                    `¡Gracias por completar la simulación para la Evidencia Final!`
+                    `🎉 ¡MATRÍCULA PROCESADA EXITOSAMENTE! 🎉\n\n` +
+                    `========================================\n` +
+                    `📝 DATOS DEL ALUMNO:\n` +
+                    `========================================\n` +
+                    `👤 Nombre: ${nuevoRegistro.nombre}\n` +
+                    `🆔 DNI: ${nuevoRegistro.dni} | Código: ${nuevoRegistro.codigo}\n` +
+                    `🎓 Especialidad: ${nuevoRegistro.carrera} (${nuevoRegistro.ciclo})\n\n` +
+                    `========================================\n` +
+                    `📚 HORARIO DE CLASES GENERADO:\n` +
+                    `========================================\n` +
+                    `${cursosTextoAlerta}\n\n` +
+                    `========================================\n` +
+                    `💰 PASARELA DE COMPROBACIÓN:\n` +
+                    `========================================\n` +
+                    `💳 Canal: ${nuevoRegistro.metodo_pago}\n` +
+                    `💵 Pago: S/ ${nuevoRegistro.monto.toFixed(2)}\n\n` +
+                    `💬 Tu comentario de mejora ha sido enviado al equipo gerencial.\n\n` +
+                    `¡Éxitos en este nuevo periodo académico!`
                 );
                 document.getElementById('enrollmentForm').reset();
-                document.getElementById('curso').innerHTML = '<option value="">Primero selecciona una carrera</option>';
+                document.getElementById('contenedor-malla').innerHTML = '<p class="text-gray-400 text-sm italic col-span-2">Por favor, elige primero una carrera profesional para visualizar los 8 cursos disponibles.</p>';
             }
             btn.innerText = "Finalizar Simulación de Matrícula";
             btn.disabled = false;
         }
 
-        // EXTRAER DATOS EN TIEMPO REAL Y RECALCULAR MÉTRICAS
+        // ACTUALIZACIÓN EN TIEMPO REAL DEL DASHBOARD
         async function updateDashboard() {
-            const { data, error } = await _supabase
-                .from('simulaciones')
-                .select('*');
-
-            if (error) {
-                alert("Error al extraer balances financieros: " + error.message);
-                return;
-            }
+            const { data, error } = await _supabase.from('simulaciones').select('*');
+            if (error) { alert("Error al extraer registros: " + error.message); return; }
             
-            // Totalizaciones
             document.getElementById('totalRegistros').innerText = data.length;
 
             let sumaDinero = 0;
@@ -359,74 +401,57 @@
             data.forEach(item => {
                 sumaDinero += parseFloat(item.monto || 0);
                 if(conteoCarreras[item.carrera] !== undefined) conteoCarreras[item.carrera]++;
-                
-                if (item.metodo_pago) {
-                    conteoPagos[item.metodo_pago] = (conteoPagos[item.metodo_pago] || 0) + 1;
-                }
+                if (item.metodo_pago) { conteoPagos[item.metodo_pago] = (conteoPagos[item.metodo_pago] || 0) + 1; }
             });
 
-            // Formato de Moneda de Perú (Soles)
             document.getElementById('totalMonto').innerText = new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(sumaDinero);
 
-            // Calcular Canal de Pago líder
             let liderPago = "-";
             let maxPagoVal = -1;
             for(let key in conteoPagos) {
-                if(conteoPagos[key] > maxPagoVal) {
-                    maxPagoVal = conteoPagos[key];
-                    liderPago = key;
-                }
+                if(conteoPagos[key] > maxPagoVal) { maxPagoVal = conteoPagos[key]; liderPago = key; }
             }
             document.getElementById('pagoPopular').innerText = liderPago;
 
-            // Renderizar Filas de la Tabla Analítica (Incluye DNI)
             const tabla = document.getElementById('tablaCuerpo');
-            tabla.innerHTML = data.map(item => `
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="px-3 py-3 font-mono font-semibold text-gray-600">
-                        <span class="text-blue-900 block">DNI: ${item.dni || '---------'}</span>
-                        <span class="text-xs text-gray-400">Cód: ${item.codigo}</span>
-                    </td>
+            tabla.innerHTML = data.map(item => {
+                let listaRender = "";
+                try {
+                    const parsed = JSON.parse(item.cursos_horarios);
+                    listaRender = parsed.map(c => `<div class="mb-1">• <b>${c.curso}</b> - <span class="text-blue-600">${c.horario}</span></div>`).join('');
+                } catch(e) {
+                    listaRender = `<span class="text-gray-400 italic">No especificado</span>`;
+                }
+
+                return `
+                <tr class="hover:bg-gray-50 transition text-[11px]">
+                    <td class="px-3 py-3 font-mono"><b>DNI: ${item.dni || '--------'}</b><br><span class="text-gray-400">Cód: ${item.codigo}</span></td>
                     <td class="px-3 py-3 font-medium text-gray-900">${item.nombre}</td>
-                    <td class="px-3 py-3 text-gray-500">${item.correo}<br><span class="text-[10px] text-gray-400 font-mono">Telf: ${item.telefono || '-'}</span></td>
-                    <td class="px-3 py-3 text-xs">
-                        <span class="bg-blue-100 text-certusAzul px-1.5 py-0.5 rounded block w-fit mb-1 font-semibold">${item.carrera}</span>
-                        <span class="text-gray-500 font-serif">${item.curso || '-'} (${item.ciclo})</span>
+                    <td class="px-3 py-3">
+                        <span class="bg-blue-900 text-white font-bold px-1 py-0.5 rounded text-[10px] block w-fit mb-1">${item.carrera} (${item.ciclo || 'I'})</span>
+                        ${listaRender}
                     </td>
-                    <td class="px-3 py-3">${item.turno}</td>
                     <td class="px-3 py-3 font-semibold text-gray-600">${item.metodo_pago || '-'}</td>
                     <td class="px-3 py-3 text-right font-mono font-bold text-emerald-600">S/ ${parseFloat(item.monto || 0).toFixed(2)}</td>
+                    <td class="px-3 py-3 text-gray-600 bg-yellow-50/50 max-w-xs truncate" title="${item.comentarios || ''}">${item.comentarios || '<span class="text-gray-300">Sin comentarios</span>'}</td>
                 </tr>
-            `).join('');
+                `;
+            }).join('');
 
             if(data.length === 0) {
-                tabla.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-gray-400">No hay transacciones registradas en Supabase aún.</td></tr>`;
+                tabla.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-gray-400">No hay transacciones guardadas.</td></tr>`;
             }
 
-            // Renderizado de Gráfico Estadístico
             const ctx = document.getElementById('carreraChart').getContext('2d');
             if (myChart) { myChart.destroy(); }
-            
             myChart = new Chart(ctx, {
                 type: 'pie',
                 data: {
                     labels: Object.keys(conteoCarreras),
-                    datasets: [{
-                        data: Object.values(conteoCarreras),
-                        backgroundColor: ['#002D72', '#00A3E0', '#FFB81C', '#A6A6A6']
-                    }]
+                    datasets: [{ data: Object.values(conteoCarreras), backgroundColor: ['#002D72', '#00A3E0', '#FFB81C', '#A6A6A6'] }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }
-                }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } } }
             });
-        }
-
-        function shareLink() {
-            navigator.clipboard.writeText(window.location.href);
-            alert("¡Enlace dinámico copiado! Compártelo con tu aula.");
         }
     </script>
 </body>
