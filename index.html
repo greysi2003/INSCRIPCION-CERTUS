@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador de Inscripción - Certus</title>
-    <!-- Tailwind CSS para diseño rápido y limpio -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js para los gráficos del panel -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <script>
         tailwind.config = {
-            theme {
-                extend {
-                    colors {
+            theme: {
+                extend: {
+                    colors: {
                         certusAzul: '#002D72',
                         certusCeleste: '#00A3E0',
                         certusGris: '#F4F6F9',
@@ -25,32 +25,29 @@
 </head>
 <body class="bg-certusGris text-certusTexto font-sans antialiased">
 
-    <!-- BARRA DE NAVEGACIÓN -->
     <nav class="bg-certusAzul text-white shadow-md sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-2">
                 <span class="text-2xl font-black tracking-wider text-certusCeleste">certus</span>
-                <span class="text-xs uppercase border-l pl-2 border-gray-400 hidden sm:inline">Evidencia</span>
+                <span class="text-xs uppercase border-l pl-2 border-gray-400 hidden sm:inline">Evidencia Final</span>
             </div>
             <div class="flex space-x-2">
                 <button onclick="switchView('simulador')" class="px-3 py-1.5 rounded text-sm font-medium hover:bg-blue-900 transition">Simulador</button>
-                <button onclick="switchView('panel'); updateDashboard();" class="px-3 py-1.5 bg-certusCeleste rounded text-sm font-medium hover:bg-cyan-600 transition">📊 Panel Admin</button>
+                <button onclick="openAdminPanel()" class="px-3 py-1.5 bg-certusCeleste rounded text-sm font-medium hover:bg-cyan-600 transition">📊 Panel Admin</button>
             </div>
         </div>
     </nav>
 
     <main class="max-w-4xl mx-auto px-4 py-8">
 
-        <!-- ================= VISTA 1: SIMULADOR ================= -->
         <section id="vista-simulador" class="block">
             <div class="bg-white rounded-lg shadow-xl p-6 md:p-8 border-t-4 border-certusCeleste">
                 <div class="text-center mb-8">
                     <h1 class="text-2xl md:text-3xl font-bold text-certusAzul">Simulador de Inscripción 2026</h1>
-                    <p class="text-gray-500 mt-2 text-sm md:text-base">Completa tu registro de carrera, cursos y horarios para la evidencia del proyecto.</p>
+                    <p class="text-gray-500 mt-2 text-sm md:text-base">Completa tu registro. Los datos se guardarán de forma segura en la Base de Datos privada.</p>
                 </div>
 
                 <form id="enrollmentForm" onsubmit="saveData(event)" class="space-y-6">
-                    <!-- Datos Personales -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-semibold mb-1">Nombres y Apellidos</label>
@@ -62,7 +59,6 @@
                         </div>
                     </div>
 
-                    <!-- Carrera y Ciclo -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-semibold mb-1">Carrera</label>
@@ -86,7 +82,6 @@
                         </div>
                     </div>
 
-                    <!-- Turno -->
                     <div>
                         <label class="block text-sm font-semibold mb-2">Turno de Preferencia</label>
                         <div class="flex flex-wrap gap-4">
@@ -96,15 +91,13 @@
                         </div>
                     </div>
 
-                    <!-- Botón Enviar -->
                     <div class="pt-4">
-                        <button type="submit" class="w-full bg-certusAzul hover:bg-blue-900 text-white font-bold py-3 rounded-md transition duration-300 shadow">
+                        <button type="submit" id="btnEnviar" class="w-full bg-certusAzul hover:bg-blue-900 text-white font-bold py-3 rounded-md transition duration-300 shadow">
                             Finalizar Simulación de Matrícula
                         </button>
                     </div>
                 </form>
 
-                <!-- BOTÓN COMPARTIR -->
                 <div class="mt-8 pt-6 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
                     <p class="text-xs text-gray-500">¿Quieres que tus compañeros lo llenen?</p>
                     <button onclick="shareLink()" class="inline-flex items-center space-x-2 text-sm font-semibold text-certusCeleste hover:text-cyan-700 transition">
@@ -114,16 +107,13 @@
             </div>
         </section>
 
-
-        <!-- ================= VISTA 2: PANEL DE CONTROL ================= -->
         <section id="vista-panel" class="hidden space-y-6">
             <div class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-xl font-bold text-certusAzul mb-4 border-b pb-2">📊 Panel de Administración y Balances</h2>
+                <h2 class="text-xl font-bold text-certusAzul mb-4 border-b pb-2">📊 Panel de Administración Base de Datos Real</h2>
                 
-                <!-- Tarjetas de Métricas Rápidas -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                     <div class="bg-blue-50 border-l-4 border-certusAzul p-4 rounded shadow-sm">
-                        <p class="text-xs font-semibold text-gray-500 uppercase">Total Simulaciones</p>
+                        <p class="text-xs font-semibold text-gray-500 uppercase">Total Simulaciones Reales</p>
                         <p id="totalRegistros" class="text-3xl font-bold text-certusAzul">0</p>
                     </div>
                     <div class="bg-cyan-50 border-l-4 border-certusCeleste p-4 rounded shadow-sm">
@@ -132,17 +122,15 @@
                     </div>
                 </div>
 
-                <!-- Gráfico de Porcentajes -->
                 <div class="mb-8">
-                    <h3 class="text-sm font-bold text-gray-600 mb-2 uppercase">Porcentaje de Inscritos por Carrera</h3>
+                    <h3 class="text-sm font-bold text-gray-600 mb-2 uppercase">Porcentaje en Tiempo Real por Carrera</h3>
                     <div class="w-full max-w-md mx-auto h-64">
                         <canvas id="carreraChart"></canvas>
                     </div>
                 </div>
 
-                <!-- Tabla de Datos Registrados -->
                 <div>
-                    <h3 class="text-sm font-bold text-gray-600 mb-2 uppercase">Historial de Alumnos Registrados</h3>
+                    <h3 class="text-sm font-bold text-gray-600 mb-2 uppercase">Historial de Alumnos en la Base de Datos</h3>
                     <div class="overflow-x-auto border rounded-lg">
                         <table class="min-w-full divide-y divide-gray-200 text-sm">
                             <thead class="bg-gray-50 font-semibold text-gray-700">
@@ -155,12 +143,8 @@
                                 </tr>
                             </thead>
                             <tbody id="tablaCuerpo" class="divide-y divide-gray-200 bg-white">
-                                <!-- Filas dinámicas por JS -->
-                            </tbody>
+                                </tbody>
                         </table>
-                    </div>
-                    <div class="mt-4 flex justify-end">
-                        <button onclick="clearData()" class="text-xs text-red-500 hover:underline">Reiniciar Base de Datos simulada</button>
                     </div>
                 </div>
             </div>
@@ -168,24 +152,40 @@
 
     </main>
 
-    <!-- LOGIC / JAVASCRIPT -->
     <script>
+        // SE CONFIGURARON TUS CREDENCIALES REALES AQUÍ
+        const SUPABASE_URL = "https://ydukqhlzgjcpqbwltqwm.supabase.co"; 
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlkdWtxaGx6Z2pjcHFid2x0cXdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1ODUwMjIsImV4cCI6MjA5ODE2MTAyMn0.w3euDM0HB4wgzlLCUAnTrKfgw7uwpeUzMzRn87M1tdg"; 
+        
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         let myChart = null;
+        const PASSWORD_ADMIN = "certus2026"; // Contraseña para ver tus balances en la exposición
 
-        // Cambiar entre pestañas (Simulador y Panel)
         function switchView(view) {
             if (view === 'simulador') {
                 document.getElementById('vista-simulador').classList.replace('hidden', 'block');
                 document.getElementById('vista-panel').classList.replace('block', 'hidden');
-            } else {
-                document.getElementById('vista-simulador').classList.replace('block', 'hidden');
-                document.getElementById('vista-panel').classList.replace('hidden', 'block');
             }
         }
 
-        // Guardar Datos localmente
-        function saveData(e) {
+        // Proteger el panel
+        function openAdminPanel() {
+            const intento = prompt("Introduce la contraseña de Administrador para ver los balances:");
+            if (intento === PASSWORD_ADMIN) {
+                document.getElementById('vista-simulador').classList.replace('block', 'hidden');
+                document.getElementById('vista-panel').classList.replace('hidden', 'block');
+                updateDashboard();
+            } else {
+                alert("Contraseña incorrecta. Acceso denegado.");
+            }
+        }
+
+        // GUARDAR REGISTROS EN LA NUBE
+        async function saveData(e) {
             e.preventDefault();
+            const btn = document.getElementById('btnEnviar');
+            btn.innerText = "Guardando en Base de Datos...";
+            btn.disabled = true;
             
             const nuevoRegistro = {
                 nombre: document.getElementById('nombre').value,
@@ -195,22 +195,33 @@
                 turno: document.querySelector('input[name="turno"]:checked').value
             };
 
-            let datosActuales = JSON.parse(localStorage.getItem('certus_datos')) || [];
-            datosActuales.push(nuevoRegistro);
-            localStorage.setItem('certus_datos', JSON.stringify(datosActuales));
+            const { data, error } = await _supabase
+                .from('simulaciones')
+                .insert([nuevoRegistro]);
 
-            alert('¡Simulación completada con éxito!');
-            document.getElementById('enrollmentForm').reset();
+            if (error) {
+                alert('Hubo un error al guardar: ' + error.message);
+            } else {
+                alert('¡Simulación completada! Guardado con éxito en la base de datos.');
+                document.getElementById('enrollmentForm').reset();
+            }
+            btn.innerText = "Finalizar Simulación de Matrícula";
+            btn.disabled = false;
         }
 
-        // Actualizar métricas, tabla y gráficos del panel
-        function updateDashboard() {
-            const data = JSON.parse(localStorage.getItem('certus_datos')) || [];
+        // LEER LOS DATOS DE LA NUBE Y CALCULAR BALANCES
+        async function updateDashboard() {
+            const { data, error } = await _supabase
+                .from('simulaciones')
+                .select('*');
+
+            if (error) {
+                alert("Error al extraer balances: " + error.message);
+                return;
+            }
             
-            // 1. Contador Total
             document.getElementById('totalRegistros').innerText = data.length;
 
-            // 2. Conteo por carrera y turno
             const conteoCarreras = { "Desarrollo de Sistemas": 0, "Administración de Empresas": 0, "Diseño Gráfico": 0, "Contabilidad": 0 };
             const conteoTurnos = { "Mañana": 0, "Tarde": 0, "Noche": 0 };
 
@@ -219,7 +230,6 @@
                 if(conteoTurnos[item.turno] !== undefined) conteoTurnos[item.turno]++;
             });
 
-            // Turno más popular
             let maxTurno = "-";
             let maxVal = -1;
             for(let key in conteoTurnos) {
@@ -230,26 +240,23 @@
             }
             document.getElementById('turnoPopular').innerText = maxTurno;
 
-            // 3. Renderizar Tabla
             const tabla = document.getElementById('tablaCuerpo');
             tabla.innerHTML = data.map(item => `
                 <tr class="hover:bg-gray-50">
                     <td class="px-4 py-3 font-mono font-medium">${item.codigo}</td>
                     <td class="px-4 py-3">${item.nombre}</td>
-                    <td class="px-4 py-3 text-xs bg-blue-50 text-certusAzul inline-block rounded my-1">${item.carrera}</td>
+                    <td class="px-4 py-3 text-xs"><span class="bg-blue-50 text-certusAzul px-2 py-1 rounded">${item.carrera}</span></td>
                     <td class="px-4 py-3">${item.ciclo}</td>
                     <td class="px-4 py-3">${item.turno}</td>
                 </tr>
             `).join('');
 
             if(data.length === 0) {
-                tabla.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-gray-400">No hay registros simulados aún.</td></tr>`;
+                tabla.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-gray-400">No hay registros en la base de datos aún.</td></tr>`;
             }
 
-            // 4. Renderizar Gráfico
             const ctx = document.getElementById('carreraChart').getContext('2d');
-            
-            if (myChart) { myChart.destroy(); } // Destruir gráfico previo para evitar bugs
+            if (myChart) { myChart.destroy(); }
             
             myChart = new Chart(ctx, {
                 type: 'pie',
@@ -263,25 +270,14 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom' }
-                    }
+                    plugins: { legend: { position: 'bottom' } }
                 }
             });
         }
 
-        // Función para copiar el link actual
         function shareLink() {
             navigator.clipboard.writeText(window.location.href);
-            alert("¡Enlace copiado al portapapeles! Ya puedes enviarlo a tus compañeros.");
-        }
-
-        // Limpiar base de datos
-        function clearData() {
-            if(confirm("¿Seguro que quieres borrar las simulaciones actuales?")) {
-                localStorage.removeItem('certus_datos');
-                updateDashboard();
-            }
+            alert("¡Enlace copiado! Ya puedes compartirlo con tus compañeros.");
         }
     </script>
 </body>
