@@ -169,13 +169,15 @@
 
     <!-- LÓGICA DE JAVASCRIPT Y CONEXIÓN -->
     <script>
-        // CREDENCIALES COMPROBADAS DE TU PROYECTO
+        // CREDENCIALES DE TU PROYECTO SUPABASE
         const SUPABASE_URL = "https://ydukqhlzgjcpqbwltqwm.supabase.co"; 
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlkdWtxaGx6Z2pjcHFid2x0cXdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1ODUwMjIsImV4cCI6MjA5ODE2MTAyMn0.w3euDM0HB4wgzlLCUAnTrKfgw7uwpeUzMzRn87M1tdg"; 
         
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         let myChart = null;
-        const PASSWORD_ADMIN = "certus2026"; // Esta es la clave de acceso que debes usar en la ventana emergente
+        
+        // CONTRASEÑA DEFINIDA EXACTAMENTE CON PUNTO AL FINAL
+        const PASSWORD_ADMIN = "certus2026."; 
 
         function switchView(view) {
             if (view === 'simulador') {
