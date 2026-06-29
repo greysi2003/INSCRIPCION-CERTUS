@@ -43,109 +43,170 @@
         <!-- ================= VISTA 1: SIMULADOR DE INSCRIPCIÓN ================= -->
         <section id="vista-simulador" class="block">
             <div class="bg-white rounded-lg shadow-xl p-6 md:p-8 border-t-4 border-certusCeleste">
-                <div class="text-center mb-8">
-                    <h1 class="text-2xl md:text-3xl font-bold text-certusAzul">Portal Matrícula y Selección de Cursos</h1>
-                    <p class="text-gray-500 mt-2 text-sm md:text-base">Elige tu carrera, arma tu propio horario (máx. 6 cursos) y registra tu pago.</p>
-                </div>
-
-                <form id="enrollmentForm" onsubmit="saveData(event)" class="space-y-6">
-                    <!-- INFO PERSONAL -->
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <h3 class="text-sm font-bold text-certusAzul uppercase mb-4 tracking-wider">1. Información del Postulante</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-semibold mb-1">Nombres y Apellidos</label>
-                                <input type="text" id="nombre" required class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-certusCeleste outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold mb-1">DNI (Documento de Identidad)</label>
-                                <input type="text" id="dni" maxlength="8" pattern="[0-9]{8}" placeholder="8 dígitos" required class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-certusCeleste outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold mb-1">Código de Estudiante</label>
-                                <input type="text" id="codigo" placeholder="I202..." required class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-certusCeleste outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold mb-1">Teléfono / Celular</label>
-                                <input type="tel" id="telefono" maxlength="9" placeholder="999888777" required class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-certusCeleste outline-none">
-                            </div>
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-semibold mb-1">Correo Electrónico</label>
-                                <input type="email" id="correo" placeholder="ejemplo@certus.edu.pe" required class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-certusCeleste outline-none">
-                            </div>
-                        </div>
+                
+                <!-- FORMULARIO DE REGISTRO -->
+                <div id="contenedor-formulario" class="block">
+                    <div class="text-center mb-8">
+                        <h1 class="text-2xl md:text-3xl font-bold text-certusAzul">Portal Matrícula y Selección de Cursos</h1>
+                        <p class="text-gray-500 mt-2 text-sm md:text-base">Elige tu carrera, arma tu propio horario (máx. 6 cursos) y registra tu pago.</p>
                     </div>
 
-                    <!-- ACADÉMICO -->
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <h3 class="text-sm font-bold text-certusAzul uppercase mb-4 tracking-wider">2. Selección Académica y Horarios</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label class="block text-sm font-semibold mb-1">Carrera Profesional</label>
-                                <select id="carrera" onchange="generarMallaCursos()" required class="w-full px-3 py-2 border rounded-md bg-white focus:ring-2 focus:ring-certusCeleste outline-none">
-                                    <option value="">Selecciona una carrera</option>
-                                    <option value="Desarrollo de Sistemas">Desarrollo de Sistemas de Información</option>
-                                    <option value="Administración de Empresas">Administración de Empresas</option>
-                                    <option value="Diseño Gráfico">Diseño Gráfico</option>
-                                    <option value="Contabilidad">Contabilidad y Finanzas</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold mb-1">Ciclo Actual</label>
-                                <select id="ciclo" required class="w-full px-3 py-2 border rounded-md bg-white focus:ring-2 focus:ring-certusCeleste outline-none">
-                                    <option value="">Selecciona el ciclo</option>
-                                    <option value="I Ciclo">I Ciclo</option>
-                                    <option value="II Ciclo">II Ciclo</option>
-                                    <option value="III Ciclo">III Ciclo</option>
-                                    <option value="IV Ciclo">IV Ciclo</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="border-t pt-4">
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Selecciona tus cursos (Máx. 6):</label>
-                            <div id="contenedor-malla" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                <p class="text-gray-400 text-sm italic col-span-2">Por favor, elige primero una carrera.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- FINANCIERO -->
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <h3 class="text-sm font-bold text-certusAzul uppercase mb-4 tracking-wider">3. Detalle Financiero del Pago</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-semibold mb-1">Medio de Pago Utilizado</label>
-                                <select id="metodo_pago" required class="w-full px-3 py-2 border rounded-md bg-white focus:ring-2 focus:ring-certusCeleste outline-none">
-                                    <option value="Yape">Yape</option>
-                                    <option value="Plin">Plin</option>
-                                    <option value="Transferencia BCP">Transferencia BCP</option>
-                                    <option value="Transferencia BBVA">Transferencia BBVA</option>
-                                    <option value="Transferencia Interbank">Transferencia Interbank</option>
-                                    <option value="Pago en Ventanilla">Pago en Ventanilla / Agente</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold mb-1">Monto Depositado (Soles)</label>
-                                <div class="relative">
-                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 font-semibold">S/</span>
-                                    <input type="number" step="0.1" id="monto" placeholder="0.00" required class="w-full pl-9 pr-3 py-2 border rounded-md focus:ring-2 focus:ring-certusCeleste outline-none">
+                    <form id="enrollmentForm" onsubmit="prepararResumen(event)" class="space-y-6">
+                        <!-- INFO PERSONAL -->
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <h3 class="text-sm font-bold text-certusAzul uppercase mb-4 tracking-wider">1. Información del Postulante</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold mb-1">Nombres y Apellidos</label>
+                                    <input type="text" id="nombre" required class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-certusCeleste outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold mb-1">DNI (Documento de Identidad)</label>
+                                    <input type="text" id="dni" maxlength="8" pattern="[0-9]{8}" placeholder="8 dígitos" required class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-certusCeleste outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold mb-1">Código de Estudiante</label>
+                                    <input type="text" id="codigo" placeholder="I202..." required class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-certusCeleste outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold mb-1">Teléfono / Celular</label>
+                                    <input type="tel" id="telefono" maxlength="9" placeholder="999888777" required class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-certusCeleste outline-none">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-semibold mb-1">Correo Electrónico</label>
+                                    <input type="email" id="correo" placeholder="ejemplo@certus.edu.pe" required class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-certusCeleste outline-none">
                                 </div>
                             </div>
                         </div>
+
+                        <!-- ACADÉMICO -->
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <h3 class="text-sm font-bold text-certusAzul uppercase mb-4 tracking-wider">2. Selección Académica y Horarios</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-sm font-semibold mb-1">Carrera Profesional</label>
+                                    <select id="carrera" onchange="generarMallaCursos()" required class="w-full px-3 py-2 border rounded-md bg-white focus:ring-2 focus:ring-certusCeleste outline-none">
+                                        <option value="">Selecciona una carrera</option>
+                                        <option value="Desarrollo de Sistemas">Desarrollo de Sistemas de Información</option>
+                                        <option value="Administración de Empresas">Administración de Empresas</option>
+                                        <option value="Diseño Gráfico">Diseño Gráfico</option>
+                                        <option value="Contabilidad">Contabilidad y Finanzas</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold mb-1">Ciclo Actual</label>
+                                    <select id="ciclo" required class="w-full px-3 py-2 border rounded-md bg-white focus:ring-2 focus:ring-certusCeleste outline-none">
+                                        <option value="">Selecciona el ciclo</option>
+                                        <option value="I Ciclo">I Ciclo</option>
+                                        <option value="II Ciclo">II Ciclo</option>
+                                        <option value="III Ciclo">III Ciclo</option>
+                                        <option value="IV Ciclo">IV Ciclo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="border-t pt-4">
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Selecciona tus cursos (Máx. 6):</label>
+                                <div id="contenedor-malla" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <p class="text-gray-400 text-sm italic col-span-2">Por favor, elige primero una carrera.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FINANCIERO -->
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <h3 class="text-sm font-bold text-certusAzul uppercase mb-4 tracking-wider">3. Detalle Financiero del Pago</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold mb-1">Medio de Pago Utilizado</label>
+                                    <select id="metodo_pago" required class="w-full px-3 py-2 border rounded-md bg-white focus:ring-2 focus:ring-certusCeleste outline-none">
+                                        <option value="Yape">Yape</option>
+                                        <option value="Plin">Plin</option>
+                                        <option value="Transferencia BCP">Transferencia BCP</option>
+                                        <option value="Transferencia BBVA">Transferencia BBVA</option>
+                                        <option value="Transferencia Interbank">Transferencia Interbank</option>
+                                        <option value="Pago en Ventanilla">Pago en Ventanilla / Agente</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold mb-1">Monto Depositado (Soles)</label>
+                                    <div class="relative">
+                                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 font-semibold">S/</span>
+                                        <input type="number" step="0.1" id="monto" placeholder="0.00" required class="w-full pl-9 pr-3 py-2 border rounded-md focus:ring-2 focus:ring-certusCeleste outline-none">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FEEDBACK -->
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <h3 class="text-sm font-bold text-blue-900 uppercase mb-2 tracking-wider">4. Buzón de Retroalimentación</h3>
+                            <textarea id="comentarios" rows="3" required placeholder="Escribe tu opinión..." class="w-full p-3 border rounded-md bg-white outline-none focus:ring-2 focus:ring-blue-400 text-sm"></textarea>
+                        </div>
+
+                        <div>
+                            <button type="submit" class="w-full bg-certusAzul hover:bg-blue-900 text-white font-bold py-3 rounded-md transition shadow-md">
+                                Revisar Resumen de Matrícula
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- NUEVA SECCIÓN: RESUMEN DE MATRÍCULA -->
+                <div id="contenedor-resumen" class="hidden space-y-6">
+                    <div class="text-center border-b pb-4">
+                        <h2 class="text-2xl font-bold text-certusAzul">📋 Resumen de tu Pre-Matrícula</h2>
+                        <p class="text-gray-500 text-sm mt-1">Por favor, verifica que todos tus datos y cursos sean correctos antes de confirmar.</p>
                     </div>
 
-                    <!-- FEEDBACK -->
-                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                        <h3 class="text-sm font-bold text-blue-900 uppercase mb-2 tracking-wider">4. Buzón de Retroalimentación</h3>
-                        <textarea id="comentarios" rows="3" required placeholder="Escribe tu opinión..." class="w-full p-3 border rounded-md bg-white outline-none focus:ring-2 focus:ring-blue-400 text-sm"></textarea>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                        <div class="bg-gray-50 p-4 rounded-lg border space-y-2">
+                            <h4 class="font-bold text-certusAzul border-b pb-1 uppercase text-xs tracking-wider">Datos Personales</h4>
+                            <p><strong>Estudiante:</strong> <span id="res-nombre"></span></p>
+                            <p><strong>DNI:</strong> <span id="res-dni"></span></p>
+                            <p><strong>Código:</strong> <span id="res-codigo"></span></p>
+                            <p><strong>Teléfono:</strong> <span id="res-telefono"></span></p>
+                            <p><strong>Correo:</strong> <span id="res-correo"></span></p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg border space-y-2">
+                            <h4 class="font-bold text-certusAzul border-b pb-1 uppercase text-xs tracking-wider">Detalle de Operación</h4>
+                            <p><strong>Carrera:</strong> <span id="res-carrera" class="font-semibold text-blue-800"></span></p>
+                            <p><strong>Ciclo:</strong> <span id="res-ciclo"></span></p>
+                            <p><strong>Método de Pago:</strong> <span id="res-pago"></span></p>
+                            <p><strong>Monto Validado:</strong> <span id="res-monto" class="font-bold text-emerald-600"></span></p>
+                        </div>
                     </div>
 
-                    <div>
-                        <button type="submit" id="btnEnviar" class="w-full bg-certusAzul hover:bg-blue-900 text-white font-bold py-3 rounded-md transition shadow-md">
-                            Finalizar Simulación de Matrícula
+                    <div class="bg-blue-50 p-4 rounded-lg border">
+                        <h4 class="font-bold text-blue-900 border-b pb-2 uppercase text-xs tracking-wider mb-2">Horario y Cursos Seleccionados</h4>
+                        <div id="res-cursos" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                            <!-- Cursos insertados dinámicamente -->
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-3 pt-4">
+                        <button onclick="regresarAlFormulario()" class="w-full sm:w-1/3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 rounded-md transition text-center">
+                            ⬅️ Modificar Datos
+                        </button>
+                        <button onclick="confirmarYGuardarTodo()" id="btnConfirmarFinal" class="w-full sm:w-2/3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-md transition shadow-md text-center">
+                            ✔️ Confirmar y Guardar Matrícula
                         </button>
                     </div>
-                </form>
+                </div>
+
+                <!-- SECCIÓN: ÉXITO -->
+                <div id="contenedor-exito" class="hidden text-center py-12 space-y-4">
+                    <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                    <h2 class="text-3xl font-black text-emerald-600">🎉 ¡Matrícula Simulada con Éxito!</h2>
+                    <p class="text-gray-600 max-w-md mx-auto text-sm md:text-base">Tus datos académicos y de pago han sido sincronizados correctamente en el Panel Gerencial.</p>
+                    <div class="pt-6">
+                        <button onclick="reiniciarSimuladorComplete()" class="bg-certusAzul hover:bg-blue-900 text-white font-bold px-6 py-2.5 rounded shadow transition text-sm">
+                            Realizar Nueva Simulación
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -220,6 +281,7 @@
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         let myChart = null;
         let baseDatosActual = [];
+        let registroTemporalObjeto = null; // Almacena temporalmente antes de subir a Supabase
         const PASSWORD_ADMIN = "certus2026.";
 
         const mallasPorCarrera = {
@@ -291,14 +353,11 @@
             }
         }
 
-        async function saveData(e) {
+        // ETAPA 1: CAPTURAR DATOS Y CARGAR EL RESUMEN VISUAL EN PANTALLA
+        function prepararResumen(e) {
             e.preventDefault();
             const checkboxes = document.querySelectorAll('input[name="curso_chk"]:checked');
-            if (checkboxes.length === 0) { alert("⚠️ Elige un curso."); return; }
-            
-            const btn = document.getElementById('btnEnviar');
-            btn.innerText = "Procesando...";
-            btn.disabled = true;
+            if (checkboxes.length === 0) { alert("⚠️ Selecciona al menos 1 curso para tu horario."); return; }
 
             let listaCursosHorarios = [];
             checkboxes.forEach(chk => {
@@ -307,7 +366,8 @@
                 listaCursosHorarios.push({ curso: chk.value, horario: turno });
             });
 
-            const nuevoRegistro = {
+            // Guardamos el objeto en la variable global temporal
+            registroTemporalObjeto = {
                 nombre: document.getElementById('nombre').value,
                 dni: document.getElementById('dni').value,
                 codigo: document.getElementById('codigo').value,
@@ -321,16 +381,64 @@
                 comentarios: document.getElementById('comentarios').value
             };
 
-            const { error } = await _supabase.from('simulaciones').insert([nuevoRegistro]);
+            // Inyectamos los textos en la pantalla del resumen
+            document.getElementById('res-nombre').innerText = registroTemporalObjeto.nombre;
+            document.getElementById('res-dni').innerText = registroTemporalObjeto.dni;
+            document.getElementById('res-codigo').innerText = registroTemporalObjeto.codigo;
+            document.getElementById('res-telefono').innerText = registroTemporalObjeto.telefono;
+            document.getElementById('res-correo').innerText = registroTemporalObjeto.correo;
+            document.getElementById('res-carrera').innerText = registroTemporalObjeto.carrera;
+            document.getElementById('res-ciclo').innerText = registroTemporalObjeto.ciclo;
+            document.getElementById('res-pago').innerText = registroTemporalObjeto.metodo_pago;
+            document.getElementById('res-monto').innerText = `S/ ${registroTemporalObjeto.monto.toFixed(2)}`;
+
+            // Renderizamos las cajitas de los cursos seleccionados
+            const contenedorCursos = document.getElementById('res-cursos');
+            contenedorCursos.innerHTML = listaCursosHorarios.map(c => `
+                <div class="p-2 bg-white border border-blue-200 rounded shadow-sm flex justify-between items-center">
+                    <span class="font-medium text-gray-700">${c.curso}</span>
+                    <span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded font-bold text-[10px] uppercase">${c.horario}</span>
+                </div>
+            `).join('');
+
+            // Hacemos el cambio de vista (ocultamos formulario, mostramos resumen)
+            document.getElementById('contenedor-formulario').classList.replace('block', 'hidden');
+            document.getElementById('contenedor-resumen').classList.replace('hidden', 'block');
+        }
+
+        function regresarAlFormulario() {
+            document.getElementById('contenedor-resumen').classList.replace('block', 'hidden');
+            document.getElementById('contenedor-formulario').classList.replace('hidden', 'block');
+        }
+
+        // ETAPA 2: RECIÉN SE SUBE A SUPABASE AL DARLE CONFIRMAR
+        async function confirmarYGuardarTodo() {
+            if (!registroTemporalObjeto) return;
+
+            const btn = document.getElementById('btnConfirmarFinal');
+            btn.innerText = "Guardando en Base de Datos...";
+            btn.disabled = true;
+
+            const { error } = await _supabase.from('simulaciones').insert([registroTemporalObjeto]);
+            
             if (error) {
                 alert('Error al guardar: ' + error.message);
+                btn.innerText = "✔️ Confirmar y Guardar Matrícula";
+                btn.disabled = false;
             } else {
-                alert('🎉 ¡Matrícula Simulada con Éxito!');
-                document.getElementById('enrollmentForm').reset();
-                document.getElementById('contenedor-malla').innerHTML = '<p class="text-gray-400 text-sm italic col-span-2">Por favor, elige una carrera profesional.</p>';
+                // Ocultamos el resumen y abrimos la pantalla de ÉXITO puro
+                document.getElementById('contenedor-resumen').classList.replace('block', 'hidden');
+                document.getElementById('contenedor-exito').classList.replace('hidden', 'block');
             }
-            btn.innerText = "Finalizar Simulación de Matrícula";
-            btn.disabled = false;
+        }
+
+        function reiniciarSimuladorComplete() {
+            document.getElementById('enrollmentForm').reset();
+            document.getElementById('contenedor-malla').innerHTML = '<p class="text-gray-400 text-sm italic col-span-2">Por favor, elige primero una carrera.</p>';
+            registroTemporalObjeto = null;
+
+            document.getElementById('contenedor-exito').classList.replace('block', 'hidden');
+            document.getElementById('contenedor-formulario').classList.replace('hidden', 'block');
         }
 
         async function updateDashboard() {
