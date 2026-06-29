@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <script>
         tailwind.config = {
             theme: {
@@ -50,8 +49,7 @@
                 </div>
 
                 <form id="enrollmentForm" onsubmit="saveData(event)" class="space-y-6">
-                    
-                    <!-- SECCIÓN 1: DATOS PERSONALES -->
+                    <!-- INFO PERSONAL -->
                     <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                         <h3 class="text-sm font-bold text-certusAzul uppercase mb-4 tracking-wider">1. Información del Postulante</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -78,7 +76,7 @@
                         </div>
                     </div>
 
-                    <!-- SECCIÓN 2: ESTRUCTURA ACADÉMICA Y SELECCIÓN DE CURSOS -->
+                    <!-- ACADÉMICO -->
                     <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                         <h3 class="text-sm font-bold text-certusAzul uppercase mb-4 tracking-wider">2. Selección Académica y Horarios</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -103,17 +101,15 @@
                                 </select>
                             </div>
                         </div>
-
-                        <!-- CONTENEDOR DINÁMICO DE CURSOS (MALLA DE 8) -->
                         <div class="border-t pt-4">
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Selecciona tus cursos y asigna sus horarios (Mínimo 1, Máximo 6):</label>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Selecciona tus cursos (Máx. 6):</label>
                             <div id="contenedor-malla" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                <p class="text-gray-400 text-sm italic col-span-2">Por favor, elige primero una carrera profesional para visualizar los 8 cursos disponibles.</p>
+                                <p class="text-gray-400 text-sm italic col-span-2">Por favor, elige primero una carrera.</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- SECCIÓN 3: INFORMACIÓN DE PAGO -->
+                    <!-- FINANCIERO -->
                     <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                         <h3 class="text-sm font-bold text-certusAzul uppercase mb-4 tracking-wider">3. Detalle Financiero del Pago</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -138,16 +134,14 @@
                         </div>
                     </div>
 
-                    <!-- SECCIÓN 4: CAJA DE COMENTARIOS PARA MEJORAS -->
+                    <!-- FEEDBACK -->
                     <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
                         <h3 class="text-sm font-bold text-blue-900 uppercase mb-2 tracking-wider">4. Buzón de Retroalimentación</h3>
-                        <label class="block text-xs text-blue-800 mb-2">Ayúdanos a optimizar la plataforma. Déjanos tus comentarios o sugerencias de mejora:</label>
-                        <textarea id="comentarios" rows="3" required placeholder="Escribe aquí tu opinión sobre la velocidad del proceso, diseño o qué funcionalidades te gustaría agregar..." class="w-full p-3 border rounded-md bg-white outline-none focus:ring-2 focus:ring-blue-400 text-sm"></textarea>
+                        <textarea id="comentarios" rows="3" required placeholder="Escribe tu opinión..." class="w-full p-3 border rounded-md bg-white outline-none focus:ring-2 focus:ring-blue-400 text-sm"></textarea>
                     </div>
 
-                    <!-- Botón Enviar -->
-                    <div class="pt-2">
-                        <button type="submit" id="btnEnviar" class="w-full bg-certusAzul hover:bg-blue-900 text-white font-bold py-3 rounded-md transition duration-300 shadow-md">
+                    <div>
+                        <button type="submit" id="btnEnviar" class="w-full bg-certusAzul hover:bg-blue-900 text-white font-bold py-3 rounded-md transition shadow-md">
                             Finalizar Simulación de Matrícula
                         </button>
                     </div>
@@ -162,11 +156,11 @@
                 <div class="flex flex-col sm:flex-row justify-between items-center border-b pb-4 mb-4 gap-4">
                     <h2 class="text-xl font-bold text-certusAzul flex items-center gap-2">📊 Panel Gerencial en Tiempo Real</h2>
                     <div class="flex space-x-2 w-full sm:w-auto">
-                        <button onclick="exportarCSV()" class="w-full sm:w-auto bg-blue-700 hover:bg-blue-800 text-white font-bold px-4 py-2 rounded shadow text-xs transition duration-200 uppercase tracking-wider flex items-center justify-center gap-1">
+                        <button type="button" onclick="exportarCSV()" class="w-full sm:w-auto bg-blue-700 hover:bg-blue-800 text-white font-bold px-4 py-2 rounded shadow text-xs uppercase tracking-wider">
                             📥 Exportar a Excel (CSV)
                         </button>
-                        <button onclick="updateDashboard()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded shadow text-xs transition duration-200 uppercase tracking-wider flex items-center justify-center gap-1">
-                            🔄 Actualizar Datos
+                        <button type="button" onclick="updateDashboard()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded shadow text-xs uppercase tracking-wider">
+                            🔄 Actualizar Datos Directo
                         </button>
                     </div>
                 </div>
@@ -194,7 +188,7 @@
                     </div>
                 </div>
 
-                <!-- Tabla de Historial -->
+                <!-- Tabla -->
                 <div>
                     <h3 class="text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">Registro Analítico de Transacciones</h3>
                     <div class="overflow-x-auto border rounded-lg">
@@ -203,7 +197,7 @@
                                 <tr>
                                     <th class="px-3 py-3 text-left">DNI / Código</th>
                                     <th class="px-3 py-3 text-left">Alumno</th>
-                                    <th class="px-3 py-3 text-left">Cursos Seleccionados y Horarios alternos</th>
+                                    <th class="px-3 py-3 text-left">Cursos Seleccionados</th>
                                     <th class="px-3 py-3 text-left">Método Pago</th>
                                     <th class="px-3 py-3 text-right">Monto</th>
                                     <th class="px-3 py-3 text-left">Feedback Alumno</th>
@@ -217,7 +211,6 @@
                 </div>
             </div>
         </section>
-
     </main>
 
     <script>
@@ -226,51 +219,33 @@
         
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         let myChart = null;
-        let baseDatosActual = []; // Variable global para guardar los datos cargados y poder exportarlos
+        let baseDatosActual = [];
         const PASSWORD_ADMIN = "certus2026.";
 
         const mallasPorCarrera = {
-            "Desarrollo de Sistemas": [
-                "Algoritmia y Fundamentos de Programación", "Base de Datos Estructuradas", "Modelado de Requerimientos de Software", 
-                "Estructuras de Datos Avanzadas", "Desarrollo de Aplicaciones Móviles", "Arquitectura de APIs y Microservicios", 
-                "Gestión y Despliegue Cloud DevOps", "Inteligencia Artificial Aplicada"
-            ],
-            "Administración de Empresas": [
-                "Administración y Gestión de Negocios", "Contabilidad para la Toma de Decisiones", "Comportamiento y Clima Organizacional", 
-                "Marketing Digital y Ventas Efectivas", "Gestión Logística y Cadena de Suministro", "Dirección Estratégica Corporativa", 
-                "Finanzas Empresariales Aplicadas", "Formulación de Planes de Negocio"
-            ],
-            "Diseño Gráfico": [
-                "Fundamentos Visuales y Composición", "Ilustración Digital Vectorial", "Tipografía y Diseño Editorial", 
-                "Retoque Fotográfico Avanzado", "Identidad Corporativa y Branding", "Diseño de Experiencia de Usuario UX/UI", 
-                "Animación y Efectos Motion Graphics", "Portafolio Creativo Profesional"
-            ],
-            "Contabilidad": [
-                "Principios de Contabilidad General", "Documentación y Registros Comerciales", "Cálculo y Liquidación de Tributos", 
-                "Contabilidad de Costos Industriales", "Auditoría Financiera Interna", "Análisis e Interpretación de Estados Financieros", 
-                "Sistemas Informáticos Contables", "Planeamiento Tributario Estratégico"
-            ]
+            "Desarrollo de Sistemas": ["Algoritmia y Fundamentos de Programación", "Base de Datos Estructuradas", "Modelado de Requerimientos de Software", "Estructuras de Datos Avanzadas", "Desarrollo de Aplicaciones Móviles", "Arquitectura de APIs and Microservicios", "Gestión y Despliegue Cloud DevOps", "Inteligencia Artificial Aplicada"],
+            "Administración de Empresas": ["Administración y Gestión de Negocios", "Contabilidad para la Toma de Decisiones", "Comportamiento y Clima Organizacional", "Marketing Digital y Ventas Efectivas", "Gestión Logística y Cadena de Suministro", "Dirección Estratégica Corporativa", "Finanzas Empresariales Aplicadas", "Formulación de Planes de Negocio"],
+            "Diseño Gráfico": ["Fundamentos Visuales y Composición", "Ilustración Digital Vectorial", "Tipografía y Diseño Editorial", "Retoque Fotográfico Avanzado", "Identidad Corporativa y Branding", "Diseño de Experiencia de Usuario UX/UI", "Animación y Efectos Motion Graphics", "Portafolio Creativo Profesional"],
+            "Contabilidad": ["Principios de Contabilidad General", "Documentación y Registros Comerciales", "Cálculo y Liquidación de Tributos", "Contabilidad de Costos Industriales", "Auditoría Financiera Interna", "Análisis e Interpretación de Estados Financieros", "Sistemas Informáticos Contables", "Planeamiento Tributario Estratégico"]
         };
 
         function generarMallaCursos() {
             const carreraSel = document.getElementById('carrera').value;
             const contenedor = document.getElementById('contenedor-malla');
             contenedor.innerHTML = "";
-
             if (!carreraSel || !mallasPorCarrera[carreraSel]) {
-                contenedor.innerHTML = '<p class="text-gray-400 text-sm italic col-span-2">Por favor, elige primero una carrera profesional para visualizar los 8 cursos disponibles.</p>';
+                contenedor.innerHTML = '<p class="text-gray-400 text-sm italic col-span-2">Por favor, elige primero una carrera.</p>';
                 return;
             }
-
             mallasPorCarrera[carreraSel].forEach((curso, index) => {
                 const div = document.createElement('div');
                 div.className = "flex items-center justify-between p-3 bg-white border rounded-md shadow-sm space-x-2";
                 div.innerHTML = `
                     <div class="flex items-start space-x-2 flex-1">
-                        <input type="checkbox" name="curso_chk" value="${curso}" id="chk_${index}" onchange="validarLimiteCursos(this)" class="mt-1 h-4 w-4 rounded text-certusCeleste focus:ring-certusCeleste">
-                        <label for="chk_${index}" class="text-xs font-medium text-gray-700 leading-tight">${curso}</label>
+                        <input type="checkbox" name="curso_chk" value="${curso}" id="chk_${index}" onchange="validarLimiteCursos(this)" class="mt-1 h-4 w-4 rounded text-certusCeleste">
+                        <label for="chk_${index}" class="text-xs font-medium text-gray-700">${curso}</label>
                     </div>
-                    <select id="turno_${index}" disabled class="text-xs border rounded p-1 bg-gray-50 focus:ring-1 focus:ring-certusCeleste outline-none">
+                    <select id="turno_${index}" disabled class="text-xs border rounded p-1 bg-gray-50">
                         <option value="Mañana">Mañana</option>
                         <option value="Tarde">Tarde</option>
                         <option value="Noche">Noche</option>
@@ -284,10 +259,9 @@
             const seleccionados = document.querySelectorAll('input[name="curso_chk"]:checked');
             const index = checkbox.id.split('_')[1];
             const selectTurno = document.getElementById(`turno_${index}`);
-
             if (checkbox.checked) {
                 if (seleccionados.length > 6) {
-                    alert("⛔ Restricción del Sistema: Solo puedes matricularte en un máximo de 6 cursos por ciclo.");
+                    alert("⛔ Restricción: Máximo 6 cursos.");
                     checkbox.checked = false;
                     return;
                 }
@@ -313,30 +287,26 @@
                 document.getElementById('vista-panel').classList.replace('hidden', 'block');
                 updateDashboard();
             } else {
-                alert("Contraseña incorrecta. Acceso denegado.");
+                alert("Contraseña incorrecta.");
             }
         }
 
         async function saveData(e) {
             e.preventDefault();
-            
             const checkboxes = document.querySelectorAll('input[name="curso_chk"]:checked');
-            if (checkboxes.length === 0) {
-                alert("⚠️ Debes seleccionar al menos un curso para procesar tu matrícula.");
-                return;
-            }
-
+            if (checkboxes.length === 0) { alert("⚠️ Elige un curso."); return; }
+            
             const btn = document.getElementById('btnEnviar');
-            btn.innerText = "Procesando Matrícula...";
+            btn.innerText = "Procesando...";
             btn.disabled = true;
 
             let listaCursosHorarios = [];
             checkboxes.forEach(chk => {
                 const index = chk.id.split('_')[1];
-                const turnoElegido = document.getElementById(`turno_${index}`).value;
-                listaCursosHorarios.push({ curso: chk.value, horario: turnoElegido });
+                const turno = document.getElementById(`turno_${index}`).value;
+                listaCursosHorarios.push({ curso: chk.value, horario: turno });
             });
-            
+
             const nuevoRegistro = {
                 nombre: document.getElementById('nombre').value,
                 dni: document.getElementById('dni').value,
@@ -351,37 +321,13 @@
                 comentarios: document.getElementById('comentarios').value
             };
 
-            const { data, error } = await _supabase
-                .from('simulaciones')
-                .insert([nuevoRegistro]);
-
+            const { error } = await _supabase.from('simulaciones').insert([nuevoRegistro]);
             if (error) {
-                alert('Error al guardar. Asegúrate de haber modificado las columnas en tu panel de Supabase: ' + error.message);
+                alert('Error al guardar: ' + error.message);
             } else {
-                let cursosTextoAlerta = listaCursosHorarios.map(item => `   • ${item.curso} [Turno: ${item.horario}]`).join('\n');
-
-                alert(
-                    `🎉 ¡MATRÍCULA PROCESADA EXITOSAMENTE! 🎉\n\n` +
-                    `========================================\n` +
-                    `📝 DATOS DEL ALUMNO:\n` +
-                    `========================================\n` +
-                    `👤 Nombre: ${nuevoRegistro.nombre}\n` +
-                    `🆔 DNI: ${nuevoRegistro.dni} | Código: ${nuevoRegistro.codigo}\n` +
-                    `🎓 Especialidad: ${nuevoRegistro.carrera} (${nuevoRegistro.ciclo})\n\n` +
-                    `========================================\n` +
-                    `📚 HORARIO DE CLASES GENERADO:\n` +
-                    `========================================\n` +
-                    `${cursosTextoAlerta}\n\n` +
-                    `========================================\n` +
-                    `💰 PASARELA DE COMPROBACIÓN:\n` +
-                    `========================================\n` +
-                    `💳 Canal: ${nuevoRegistro.metodo_pago}\n` +
-                    `💵 Pago: S/ ${nuevoRegistro.monto.toFixed(2)}\n\n` +
-                    `💬 Tu comentario de mejora ha sido enviado al equipo gerencial.\n\n` +
-                    `¡Éxitos en este nuevo periodo académico!`
-                );
+                alert('🎉 ¡Matrícula Simulada con Éxito!');
                 document.getElementById('enrollmentForm').reset();
-                document.getElementById('contenedor-malla').innerHTML = '<p class="text-gray-400 text-sm italic col-span-2">Por favor, elige primero una carrera profesional para visualizar los 8 cursos disponibles.</p>';
+                document.getElementById('contenedor-malla').innerHTML = '<p class="text-gray-400 text-sm italic col-span-2">Por favor, elige una carrera profesional.</p>';
             }
             btn.innerText = "Finalizar Simulación de Matrícula";
             btn.disabled = false;
@@ -389,9 +335,9 @@
 
         async function updateDashboard() {
             const { data, error } = await _supabase.from('simulaciones').select('*');
-            if (error) { alert("Error al extraer registros: " + error.message); return; }
+            if (error) { alert("Error: " + error.message); return; }
             
-            baseDatosActual = data; // Almacenamos los datos para poder exportarlos luego
+            baseDatosActual = data;
             document.getElementById('totalRegistros').innerText = data.length;
 
             let sumaDinero = 0;
@@ -418,29 +364,19 @@
                 let listaRender = "";
                 try {
                     const parsed = JSON.parse(item.cursos_horarios);
-                    listaRender = parsed.map(c => `<div class="mb-1">• <b>${c.curso}</b> - <span class="text-blue-600">${c.horario}</span></div>`).join('');
-                } catch(e) {
-                    listaRender = `<span class="text-gray-400 italic">No especificado</span>`;
-                }
+                    listaRender = parsed.map(c => `<div>• ${c.curso} (${c.horario})</div>`).join('');
+                } catch(e) { listaRender = "No especificado"; }
 
                 return `
-                <tr class="hover:bg-gray-50 transition text-[11px]">
-                    <td class="px-3 py-3 font-mono"><b>DNI: ${item.dni || '--------'}</b><br><span class="text-gray-400">Cód: ${item.codigo}</span></td>
-                    <td class="px-3 py-3 font-medium text-gray-900">${item.nombre}</td>
-                    <td class="px-3 py-3">
-                        <span class="bg-blue-900 text-white font-bold px-1 py-0.5 rounded text-[10px] block w-fit mb-1">${item.carrera} (${item.ciclo || 'I'})</span>
-                        ${listaRender}
-                    </td>
-                    <td class="px-3 py-3 font-semibold text-gray-600">${item.metodo_pago || '-'}</td>
-                    <td class="px-3 py-3 text-right font-mono font-bold text-emerald-600">S/ ${parseFloat(item.monto || 0).toFixed(2)}</td>
-                    <td class="px-3 py-3 text-gray-600 bg-yellow-50/50 max-w-xs truncate" title="${item.comentarios || ''}">${item.comentarios || '<span class="text-gray-300">Sin comentarios</span>'}</td>
-                </tr>
-                `;
+                <tr class="text-[11px]">
+                    <td class="px-3 py-2">DNI: ${item.dni}<br>Cód: ${item.codigo}</td>
+                    <td class="px-3 py-2 font-medium">${item.nombre}</td>
+                    <td class="px-3 py-2"><span class="font-bold text-blue-800 block">${item.carrera}</span>${listaRender}</td>
+                    <td class="px-3 py-2">${item.metodo_pago}</td>
+                    <td class="px-3 py-2 text-right font-bold text-emerald-600">S/ ${parseFloat(item.monto || 0).toFixed(2)}</td>
+                    <td class="px-3 py-2 text-gray-500">${item.comentarios || ''}</td>
+                </tr>`;
             }).join('');
-
-            if(data.length === 0) {
-                tabla.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-gray-400">No hay transacciones guardadas.</td></tr>`;
-            }
 
             const ctx = document.getElementById('carreraChart').getContext('2d');
             if (myChart) { myChart.destroy(); }
@@ -450,68 +386,42 @@
                     labels: Object.keys(conteoCarreras),
                     datasets: [{ data: Object.values(conteoCarreras), backgroundColor: ['#002D72', '#00A3E0', '#FFB81C', '#A6A6A6'] }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } } }
+                options: { responsive: true, maintainAspectRatio: false }
             });
         }
 
-        // LÓGICA DE EXPORTACIÓN A EXCEL (CSV) TOTALMENTE EN ESPAÑOL Y COMPATIBLE
         function exportarCSV() {
-            if (baseDatosActual.length === 0) {
-                alert("❌ No hay datos disponibles para exportar en este momento.");
-                return;
-            }
-
-            // Encabezados del archivo Excel
-            let filasCsv = [
-                ["DNI", "Codigo Estudiante", "Nombres y Apellidos", "Correo Electronico", "Telefono", "Carrera Profesional", "Ciclo", "Cursos y Horarios", "Metodo de Pago", "Monto (S/.)", "Comentarios de Mejora"]
-            ];
-
-            // Procesar cada registro de la base de datos
+            if (baseDatosActual.length === 0) { alert("No hay datos para exportar."); return; }
+            let filasCsv = [["DNI", "Codigo", "Nombre", "Correo", "Telefono", "Carrera", "Ciclo", "Cursos", "Pago", "Monto", "Comentarios"]];
+            
             baseDatosActual.forEach(item => {
                 let textoCursos = "";
                 try {
                     const parsed = JSON.parse(item.cursos_horarios);
                     textoCursos = parsed.map(c => `${c.curso} (${c.horario})`).join(' | ');
-                } catch(e) {
-                    textoCursos = "No especificado";
-                }
+                } catch(e) { textoCursos = "No especificado"; }
 
                 filasCsv.push([
-                    item.dni || "",
-                    item.codigo || "",
-                    item.nombre || "",
-                    item.correo || "",
-                    item.telefono || "",
-                    item.carrera || "",
-                    item.ciclo || "",
-                    textoCursos,
-                    item.metodo_pago || "",
-                    parseFloat(item.monto || 0).toFixed(2),
-                    (item.comentarios || "").replace(/\n/g, " ") // Quita saltos de línea para no romper el Excel
+                    item.dni || "", item.codigo || "", item.nombre || "", item.correo || "", item.telefono || "", 
+                    item.carrera || "", item.ciclo || "", textoCursos, item.metodo_pago || "", 
+                    parseFloat(item.monto || 0).toFixed(2), (item.comentarios || "").replace(/\n/g, " ")
                 ]);
             });
 
-            // Convertir matriz a texto plano CSV usando punto y coma como separador (estándar de Excel en español)
-            let contenidoCsv = "\uFEFF"; // BOM para obligar a Excel a reconocer tildes y la letra Ñ
+            let contenidoCsv = "\uFEFF"; 
             filasCsv.forEach(fila => {
-                // Escapar comillas dobles y envolver campos que contengan texto estructurado
-                let filaProcesada = fila.map(campo => {
-                    let cadena = String(campo).replace(/"/g, '""');
-                    return `"${cadena}"`;
-                });
+                let filaProcesada = fila.map(campo => `"${String(campo).replace(/"/g, '""')}"`);
                 contenidoCsv += filaProcesada.join(";") + "\r\n";
             });
 
-            // Crear el archivo virtual y disparar la descarga en el navegador
             let blob = new Blob([contenidoCsv], { type: 'text/csv;charset=utf-8;' });
             let url = URL.createObjectURL(blob);
-            let linkDescarga = document.createElement("a");
-            linkDescarga.setAttribute("href", url);
-            linkDescarga.setAttribute("download", `Reporte_Matriculas_Certus_${new Date().toISOString().slice(0,10)}.csv`);
-            linkDescarga.style.visibility = 'hidden';
-            document.body.appendChild(linkDescarga);
-            linkDescarga.click();
-            document.body.removeChild(linkDescarga);
+            let link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", "Reporte_Matriculas_Certus.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     </script>
 </body>
