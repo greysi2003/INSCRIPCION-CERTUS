@@ -161,9 +161,14 @@
                 
                 <div class="flex flex-col sm:flex-row justify-between items-center border-b pb-4 mb-4 gap-4">
                     <h2 class="text-xl font-bold text-certusAzul flex items-center gap-2">📊 Panel Gerencial en Tiempo Real</h2>
-                    <button onclick="updateDashboard()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded shadow text-xs transition duration-200 uppercase tracking-wider">
-                        🔄 Actualizar Datos Directo
-                    </button>
+                    <div class="flex space-x-2 w-full sm:w-auto">
+                        <button onclick="exportarCSV()" class="w-full sm:w-auto bg-blue-700 hover:bg-blue-800 text-white font-bold px-4 py-2 rounded shadow text-xs transition duration-200 uppercase tracking-wider flex items-center justify-center gap-1">
+                            📥 Exportar a Excel (CSV)
+                        </button>
+                        <button onclick="updateDashboard()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded shadow text-xs transition duration-200 uppercase tracking-wider flex items-center justify-center gap-1">
+                            🔄 Actualizar Datos
+                        </button>
+                    </div>
                 </div>
                 
                 <!-- Métricas -->
@@ -221,9 +226,9 @@
         
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         let myChart = null;
+        let baseDatosActual = []; // Variable global para guardar los datos cargados y poder exportarlos
         const PASSWORD_ADMIN = "certus2026.";
 
-        // Mallas de 8 cursos por carrera
         const mallasPorCarrera = {
             "Desarrollo de Sistemas": [
                 "Algoritmia y Fundamentos de Programación", "Base de Datos Estructuradas", "Modelado de Requerimientos de Software", 
@@ -247,7 +252,6 @@
             ]
         };
 
-        // Generar dinámicamente los 8 cursos con sus respectivos selectores de horarios
         function generarMallaCursos() {
             const carreraSel = document.getElementById('carrera').value;
             const contenedor = document.getElementById('contenedor-malla');
@@ -276,7 +280,6 @@
             });
         }
 
-        // Controlar que solo se marquen un máximo de 6 casillas
         function validarLimiteCursos(checkbox) {
             const seleccionados = document.querySelectorAll('input[name="curso_chk"]:checked');
             const index = checkbox.id.split('_')[1];
@@ -314,7 +317,6 @@
             }
         }
 
-        // GUARDAR DATOS EN LA NUBE CON RESUMEN COMPLETO Y COMENTARIOS
         async function saveData(e) {
             e.preventDefault();
             
@@ -328,7 +330,6 @@
             btn.innerText = "Procesando Matrícula...";
             btn.disabled = true;
 
-            // Construir la estructura de cursos elegidos con sus horarios específicos
             let listaCursosHorarios = [];
             checkboxes.forEach(chk => {
                 const index = chk.id.split('_')[1];
@@ -344,7 +345,7 @@
                 telefono: document.getElementById('telefono').value,
                 carrera: document.getElementById('carrera').value,
                 ciclo: document.getElementById('ciclo').value,
-                cursos_horarios: JSON.stringify(listaCursosHorarios), // Se guarda estructurado
+                cursos_horarios: JSON.stringify(listaCursosHorarios),
                 metodo_pago: document.getElementById('metodo_pago').value,
                 monto: parseFloat(document.getElementById('monto').value),
                 comentarios: document.getElementById('comentarios').value
@@ -357,7 +358,6 @@
             if (error) {
                 alert('Error al guardar. Asegúrate de haber modificado las columnas en tu panel de Supabase: ' + error.message);
             } else {
-                // Formatear texto de cursos elegidos para el mensaje emergente final
                 let cursosTextoAlerta = listaCursosHorarios.map(item => `   • ${item.curso} [Turno: ${item.horario}]`).join('\n');
 
                 alert(
@@ -387,11 +387,11 @@
             btn.disabled = false;
         }
 
-        // ACTUALIZACIÓN EN TIEMPO REAL DEL DASHBOARD
         async function updateDashboard() {
             const { data, error } = await _supabase.from('simulaciones').select('*');
             if (error) { alert("Error al extraer registros: " + error.message); return; }
             
+            baseDatosActual = data; // Almacenamos los datos para poder exportarlos luego
             document.getElementById('totalRegistros').innerText = data.length;
 
             let sumaDinero = 0;
@@ -452,6 +452,66 @@
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } } }
             });
+        }
+
+        // LÓGICA DE EXPORTACIÓN A EXCEL (CSV) TOTALMENTE EN ESPAÑOL Y COMPATIBLE
+        function exportarCSV() {
+            if (baseDatosActual.length === 0) {
+                alert("❌ No hay datos disponibles para exportar en este momento.");
+                return;
+            }
+
+            // Encabezados del archivo Excel
+            let filasCsv = [
+                ["DNI", "Codigo Estudiante", "Nombres y Apellidos", "Correo Electronico", "Telefono", "Carrera Profesional", "Ciclo", "Cursos y Horarios", "Metodo de Pago", "Monto (S/.)", "Comentarios de Mejora"]
+            ];
+
+            // Procesar cada registro de la base de datos
+            baseDatosActual.forEach(item => {
+                let textoCursos = "";
+                try {
+                    const parsed = JSON.parse(item.cursos_horarios);
+                    textoCursos = parsed.map(c => `${c.curso} (${c.horario})`).join(' | ');
+                } catch(e) {
+                    textoCursos = "No especificado";
+                }
+
+                filasCsv.push([
+                    item.dni || "",
+                    item.codigo || "",
+                    item.nombre || "",
+                    item.correo || "",
+                    item.telefono || "",
+                    item.carrera || "",
+                    item.ciclo || "",
+                    textoCursos,
+                    item.metodo_pago || "",
+                    parseFloat(item.monto || 0).toFixed(2),
+                    (item.comentarios || "").replace(/\n/g, " ") // Quita saltos de línea para no romper el Excel
+                ]);
+            });
+
+            // Convertir matriz a texto plano CSV usando punto y coma como separador (estándar de Excel en español)
+            let contenidoCsv = "\uFEFF"; // BOM para obligar a Excel a reconocer tildes y la letra Ñ
+            filasCsv.forEach(fila => {
+                // Escapar comillas dobles y envolver campos que contengan texto estructurado
+                let filaProcesada = fila.map(campo => {
+                    let cadena = String(campo).replace(/"/g, '""');
+                    return `"${cadena}"`;
+                });
+                contenidoCsv += filaProcesada.join(";") + "\r\n";
+            });
+
+            // Crear el archivo virtual y disparar la descarga en el navegador
+            let blob = new Blob([contenidoCsv], { type: 'text/csv;charset=utf-8;' });
+            let url = URL.createObjectURL(blob);
+            let linkDescarga = document.createElement("a");
+            linkDescarga.setAttribute("href", url);
+            linkDescarga.setAttribute("download", `Reporte_Matriculas_Certus_${new Date().toISOString().slice(0,10)}.csv`);
+            linkDescarga.style.visibility = 'hidden';
+            document.body.appendChild(linkDescarga);
+            linkDescarga.click();
+            document.body.removeChild(linkDescarga);
         }
     </script>
 </body>
